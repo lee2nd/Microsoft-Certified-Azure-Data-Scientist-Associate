@@ -1,0 +1,291 @@
+[大綱] - 可優先讀比重高的
+
+ - 設計和準備機器學習解決方案 (20–25%)
+ - 探索資料和訓練模型 (35–40%)
+ - 準備部署所需的模型 (20-25%)
+ - 部署和重新訓練模型 (10-15%)
+
+ 
+[考試]
+
+1. 100分鐘
+2. 56題 (通常包含 40-60 道問題)
+   - 前51題可檢查(單選、多選)
+   - 2~3題拖曳流程排順序
+   - 1~2題github操作
+   - 5題是非題(不能檢查)
+3. 700/1000以上及格
+4. 如果測驗未提供您慣用語言的版本，您可以多要求 30 分鐘來完成測驗
+
+
+[其他筆記]
+
+1. Azure Cognitive Services: 具有REST API和客戶端庫SDK的雲端服務，可用於幫助開發人員建置認知智慧應用程式，而無需太過深入的人工智慧（AI）或數據科學技能或知識
+2. AML: Automated ML
+3. Azure Command Line Interface(CLI): 類似 cmd，用 linux 語法
+4. SDK(Software Development Kit): 軟體開發工具套件
+5. environments(考試重點)
+   - curated environments
+   - user-managed environments
+   - system-managed environments
+
+   
+[題目檢討]
+
+1. Q: 當資料科學家從 IoT 裝置擷取 JSON 物件，並將 CSV 檔案中的所有轉換資料結合時，哪一個資料存放區最適合使用？
+   A: Azure Data Lake 儲存體(您可以將 CSV 檔案儲存在資料湖中，而不需要任何容量限制，答案不是 Azure Blob 儲存體，因為雖然您可以將 CSV 儲存在 Azure Blob 儲存體中，但 IoT 裝置會產生許多資料點，而且您可能會快速達到儲存體限制)
+2. Q: Azure Cognitive Services
+   A: 開發者可以輕鬆地將這些認知能力應用到自己的應用程式中，不再需要從頭開始建立複雜的模型和算法。這使得開發者可以更加專注在應用的功能和業務邏輯上，同時還能夠快速地開發出具有智慧和認知能力的應用程式
+3. Q: 資料科學家想要將機器學習模型定型，以預測超市專案的銷售額
+   A: 時間序列預測
+4. Q: 資料科學家收到資料來定型模型，以預測商品的銷售量。 資料科學家想要只提供資料並編輯某些設定，以快速逐一查看數個特徵化和演算法選項。 在此情況下，最適合使用哪一個工具?
+   A: 自動化 Machine Learning(您只需要提供資料，而自動化機器學習將會逐一查看不同的特徵化方法和演算法)
+5. Q: 即時/批次部署的模型應該使用哪種計算？  
+   A: 容器
+6. Q: 資料科學家想要執行單一指令碼來定型模型。哪種類型的作業最適合用來執行單一指令碼？ 
+   A: Command (管線作業可用來在序列中執行多個指令碼或元件)
+7. Q: 資料科學家想要訓練機器學習模型，並使用 Azure Machine Learning 進行追蹤來實驗。 應該使用哪一個工具，從慣用的環境執行指令碼來訓練模型？
+   A: Python SDK
+8. Q: 已開發用來預測銷售預測的機器學習模型。 每週都會擷取新的銷售資料，而且模型必須在產生新預測之前，重新訓練最新的資料。 每週應該使用哪一個工具來重新訓練模型？ 
+   A: Azure CLI
+   
+   
+[設計機器學習解決方案]
+
+1. 資料是機器學習的基礎，資料數量和資料品質都會影響模型的精確度
+2. 定義問題 > 取得資料 > 準備資料 > 訓練模型 > 整合模型 > 監視模型
+   (此流程是反覆且連續的)
+3. 資料格式: 
+   - 表格式或結構化資料(SQL、Excel)
+   - 半結構化資料(具有欄位，但內容不一致，ex: json、xml、mongodb)
+   - 非結構化資料(在結構方面不遵循任何規則的檔案。 例如，文件、影像、音訊和視訊檔案會被視為非結構化資料)
+4. 雲端的優點之一，就是能夠根據您的需求相應增加或減少計算。可以在不需要計算時將其關閉，並在您想要再次使用它時將其重新啟動
+5. 儲存資料
+   - Azure Blob 儲存體
+     --「非結構化」資料的最便宜的選項。 適用於儲存影像、文字、csv 和 JSON 等檔案
+   - Azure Data Lake Storage (Gen 2)
+     -- Azure Blob 儲存體的更進階版本也會將 CSV 檔案和影像等檔案儲存為「非結構化」資料
+	 -- 實作階層式命名空間，更容易存取特定檔案或資料夾
+	 -- 儲存體容量幾乎無限制，因此適合用來儲存大型資料
+	 -- An Azure Data Lake will allow us to store the data as CSV files, and make use of the hierarchical namespace to have more granular control over who has access to what
+   - Azure SQL 資料庫
+	 -- 將資料儲存為「結構化」資料
+	 -- 適用於不會隨時間變更的資料
+6. 資料擷取管線
+   - 是一連串工作，可移動和轉換資料	
+   - Azure Synapse Analytics(Azure Synapse Pipelines)
+     -- 可以透過便於使用的 UI 建立和排程資料擷取管線，或以 JSON 格式定義管線
+	 -- set up a secure connection
+	 -- create automated pipelines
+	 -- 通常拿來複製和轉換資料，輕鬆地將資料從一個來源複製到資料存放區(放到 Azure Blob、Azure Data Lake 中)
+   - Azure Databricks
+	 -- 偏好使用程式碼(SQL、Python 或 R)
+	 -- 使用 Spark 叢集
+   - Azure Machine Learning
+     -- 提供計算叢集
+	 -- 可在需要時自動相應增加和減少
+	 -- 管線通常用於定型"機器學習模型"
+   - Azure Synapse Analytics 和 Azure Databricks 提供更可調整的計算，可讓轉換分散到計算節點。 
+     因此，當您使用 Azure Synapse Analytics 或 Azure Databricks 執行資料轉換時，
+	 資料轉換的執行效能可能會更好，而不是使用 Azure Machine Learning
+7. 機器學習模型的服務
+   - Azure Machine Learning
+     -- Studio 進行 UI 型體驗
+	 -- Python SDK 管理機器學習工作負載
+	 -- CLI 以取得程式碼優先體驗
+   - Azure Synapse Analytics
+     -- 分散式運算進行巨量資料分析
+	 -- 使用 MLlib 在 Spark 集區上定型模型
+   - Azure AI 服務
+     -- "預先建置"的機器學習模型集合
+	 -- EX: 影像中的物件偵測
+	 -- 以應用程式程式設計介面 (API) 的形式提供
+8. 機器學習模型的服務之間的差異
+   - 每當其中一個可自訂的預先建置模型符合您的需求時，請使用 Azure AI 服務，以節省時間和精力
+   - 如果您想要保留所有資料相關的 (資料工程和資料科學) 專案在相同服務內，請使用 Azure Synapse Analytics 或 Azure Databricks
+   - 如果您需要使用大型資料集 (當您遇到標準計算的容量限制時，資料集為大型時) 的 分散式運算，可使用 Azure Synapse Analytics 或 Azure Databricks。 您必須使用 PySpark，以使用分散式運算
+   - 當您想要完全控制模型定型和管理時，請使用 Azure Machine Learning 或 Azure Databricks
+   - 如果 Python 是您慣用的程式設計語言，請使用 Azure Machine Learning
+   - 當您想要用直覺式使用者介面來管理機器學習生命週期時，請使用 Azure Machine Learning
+9. 較小的表格式資料集，使用 CPU 即可滿足需求，且費用較為便宜。 每當使用影像或文字等非結構化資料時，GPU 會更加強大且有效
+10. 較大的表格式資料量，使用 GPU 可能也很有幫助(RAPID 等程式庫)
+11. Spark 叢集是由驅動程式節點和背景工作角色節點所組成。 您的程式碼一開始會與驅動程式節點通訊。 工作接著會散發至背景工作角色節點。 當您使用散發工作的服務時，可以平行執行工作負載的一部分，以減少處理時間
+12. 若要充分利用 Spark 叢集，您的程式碼必須以適用於 Spark 的語言撰寫 (例如 Scala、SQL、RSpark 或 PySpark)，才能散發工作負載
+13. 無論您是想要即時或批次預測，不一定要取決於收集新資料的頻率。 而是取決於您需要產生預測的頻率和速度。如果您需要在收集新資料時立即產生模型的預測，則需要即時預測。 如果模型預測只會在特定時間取用，您需要批次預測
+14. Azure Container Instance (ACI) 和 Azure Kubernetes Service (AKS) 之類的容器技術適合即時預測(需要永遠可用的計算，而且能夠 (幾乎) 立即傳回結果)  
+15. MLOPS 結構
+	- 將模型定型轉換為強固且可重現的管線
+	- 在開發環境中測試程式碼和模型
+	- 在生產環境中部署模型
+	- 將端對端流程自動化
+16. MLOPS 環境
+	- 在「開發」環境中試驗模型定型
+	- 將最佳模型移至「預備」或「生產前」環境，部署及測試模型
+	- 最後，將模型「發行」到「生產」環境，部署模型以供終端使用者使用
+17. MLOPS 步驟	
+	- 設定：為解決方案建立所有必要的 Azure 資源
+	- 模型開發 (內部迴圈)：探索與處理資料來訓練與評估模型
+	- 持續整合：封裝並註冊模型
+	- 模型部署 (外部迴圈)：部署模型
+	- 持續部署：測試模型並升階至實際執行環境
+	- 監視：監視模型與端點效能	
+18. 組織 Azure Machine Learning 環境
+    - 最佳做法是在不同的階段使用不同的環境
+	- 小組使用開發、生產前和生產環境。並非小組每個人都該存取所有環境
+	- EX: 資料科學家可能只在開發環境中使用非生產資料，而機器學習工程師則使用生產資料，在生產前和生產環境中部署模型
+19. 分工
+	- 將資料儲存在 Data engineer 所管理的 Azure Blob 儲存體中
+	- Infra 小組要建立所有必要的 Azure 資源，例如 Azure Machine Learning 工作區
+	- Data scientist 著重於其最佳用途：開發和定型模型 (內部迴圈)
+	- MLE 會將定型的模型進行部署 (外部迴圈)
+20. Monitoring
+    - 模型
+	  -- 使用 MLflow 來追蹤
+	  -- 在監視模型之前，請務必決定您想要監視的效能計量，以及每個計量的基準應該為何。何時應收到警示，指出模型不再正確
+	- 資料
+	  -- 經過一段時間後，可能會有變更資料設定檔的趨勢，讓您的模型較不準確
+	  -- 例如，假設模型已定型為根據汽缸數、引擎大小、重量和其他特徵來預測汽車的預期汽油里程數。 經過一段時間後，隨著汽車製造和引擎技術的進步，車輛的一般燃料效率可能會大幅改善；使得根據舊資料定型所做的模型預測較不準確
+	- Infra
+      -- 將成本降至最低並最佳化效能
+	  -- compute 可能是其中一個最多費用的項目
+	  -- 藉由檢閱 compute 使用率，您知道是否可以縮小已佈建的 compute，或是否需要擴增以避免容量限制
+21. MLOps 專案中常用的兩個工具是 Azure DevOps 和 GitHub (Actions)，這兩個工具都可讓您建立自動化管線，並可觸發 Azure Machine Learning 管線
+22. 使用 Azure DevOps 和 GitHub 之類的工具時，建議您改用 Azure Machine Learning CLI 延伸模組來設定必要的資源和作業。 Azure CLI 是專為自動化工作而設計，因此可能更易於搭配 Azure DevOps 和 GitHub 使用
+   
+[探索和設定 Azure Machine Learning 工作區]   
+   
+1. Azure Machine Learning 工作區
+   會儲存所有訓練作業的歷程記錄，包括記錄、計量、輸出，以及程式碼的快照集
+2. Azure 儲存體帳戶：儲存工作區中使用的檔案和筆記本，以及儲存作業和模型的中繼資料
+3. Azure Key Vault：用來安全管理工作區所使用的祕密，例如驗證金鑰和認證
+4. Application Insights：用來監視工作區中的預測服務
+5. Azure Container Registry：視需要建立，以儲存 Azure Machine Learning 環境的映像   
+6. 角色型存取控制 (RBAC)
+7. Compute 是最重要的資源，但也可能是最耗費成本的資源。 因此，最佳做法是只允許系統管理員建立和管理計算資源。 不得允許資料科學家編輯計算
+8. Azure Machine Learning 工作區中有五種類型的 Compute
+   - 計算執行個體：類似於雲端中的虛擬機器，並依工作區進行管理。 適合作為開發環境來執行 (Jupyter) 筆記本。
+   - 計算叢集：雲端中 CPU 或 GPU 計算節點的隨選叢集 (依工作區進行管理)。 適合用於生產工作負載，因為其會自動調整以符合您的需求。
+   - Kubernetes 叢集:可讓您建立或連結 Azure Kubernetes Service (AKS) 叢集。 適合於在生產案例中部署已定型的機器學習模型。
+   - 附加的計算：可讓您將其他 Azure 計算資源連結至工作區，例如 Azure Databricks 或 Synapse Spark 集區。
+   - 無伺服器計算：您可以用於定型作業的完全受控隨選計算
+9. 當您在工作區中建立模型時，將會指定名稱和版本。 這在您部署已註冊的模型時會特別有用，版本控制可讓您追蹤想要使用的特定模型
+   - pickle檔
+   - 可用 Scikit-learn 或 PyTorch
+10. 可以在建立管線時使用元件。 因此，元件通常代表管線中的步驟，例如將資料正規化、訓練迴歸模型，或在驗證資料集上測試已定型的模型
+11. 自動化機器學習，用來探索演算法和超參數值，可以省下測試演算法和超參數的時間，會逐一查看與特徵選取配對的演算法，以尋找資料的最佳執行模型
+12. Workspace 非常適合用於快速實驗，或當您想要探索過去的作業
+13. Workspace 使用時機
+    - 想要確認管線是否成功執行
+	- 當管線作業失敗時，可以使用工作室瀏覽至記錄，並檢閱錯誤訊息
+14. Azure CLI 或 Python SDK 使用時機
+    - 重複率更高的工作
+	- 想要自動化的工作
+15. 設計工具: 拖拉式的 uml 連結(把整個ds project做視覺化呈現，no-code形式)
+16. Python SDK 線到工作區。 藉由連線，您會驗證環境以與工作區互動，以建立和管理資產和資源
+17. Azure CLI 好處
+	- 讓建立及設定資產和資源自動化，使其可重複
+	- 針對必須在多個環境 (例如開發、測試和生產) 中複寫的資產和資源，確保其一致性
+	- 將機器學習資產設定併入開發人員作業 (DevOps) 工作流程，例如持續整合和持續部署 (CI/CD) 管線
+18. 若要使用 Azure CLI 與 Azure Machine Learning 工作區互動，將使用 command。 每個 command 前面都會加上 az ml
+     az ml compute create --name aml-cluster --size STANDARD_DS3_v2 --min-instances 0 --max-instances 5 --type AmlCompute --resource-group my-resource-group --workspace-name my-workspace
+19. Azure CLI 很常搭配 YAML 使用
+	az ml compute create --file compute.yml --resource-group my-resource-group --workspace-name my-workspace
+	{compute.yml 內容如下}
+    $schema: https://azuremlschemas.azureedge.net/latest/amlCompute.schema.json 
+	name: aml-cluster
+	type: amlcompute
+	size: STANDARD_DS3_v2
+	min_instances: 0
+	max_instances: 5
+20. 在 Azure Machine Learning 內容中使用資料時，有三種常見的通訊協定： 
+	- http(s)：用於公開或私人儲存在 Azure Blob 儲存體內的資料，或公開可用的 HTTP 位置
+	- abfs(s)：用於 Azure Data Lake Storage Gen 2 中的資料存放區
+	- azureml：用於儲存在資料存放區中的資料
+21. Azure 上建立具有現有儲存體帳戶的資料存放區時，您可以選擇兩種不同的驗證方法  
+	- 認證型：使用服務主體、共用存取簽章 (SAS) 權杖或帳戶金鑰來驗證儲存體帳戶的存取權
+	- 以身分識別為依據：使用您的「Microsoft Entra 身分識別」或「受控識別」 
+22. 每個工作區都有四個內建資料存放區（兩個連線到Azure 儲存體 Blob 容器，兩個連線到Azure 儲存體檔案共用）   
+23. 資料資產: 不想擔心如何取得存取權，簡化對您想要使用資料的存取
+24. 建立資料資產並指向儲存在本機裝置上的檔案或資料夾時，會將檔案或資料夾的複本上傳至預設資料存放區 workspaceblobstore
+25. 當您的資料架構複雜或經常變更時，建議使用 MLTable 資料資產。 您不需在使用資料的每個指令碼中變更讀取資料的方式，而只需在資料資產本身中變更
+26. 計算執行個體(ComputeInstance)必須在 Azure 區域 (例如西歐內) 中具有唯一的名稱。 如果名稱已經存在，則會顯示錯誤訊息
+27. 可以將計算執行個體附加至筆記本以在筆記本內執行資料格
+28. 計算執行個體只能指派給「一位」使用者，因為計算執行個體無法處理平行工作負載。 當您建立新的計算執行個體時，如果您有適當的權限，您可以將它指派給其他人
+29. 建立 cluster
+
+	from azure.ai.ml.entities import AmlCompute
+
+	cluster_basic = AmlCompute(
+		name="cpu-cluster",
+		type="amlcompute",
+		size="STANDARD_DS3_v2",
+		location="westus",
+		min_instances=0,
+		max_instances=2,
+		idle_time_before_scale_down=120,
+		tier="low_priority",
+	)
+	ml_client.begin_create_or_update(cluster_basic).result()
+	
+	- size：指定計算叢集中每個節點的虛擬機器類型。 根據 Azure 中虛擬機器的大小。 除了大小之外，您也可以指定是否要使用 CPU 或 GPU。
+	- max_instances：指定計算叢集可相應放大的節點數目上限。 計算叢集可以處理的平行工作負載數目，類似於叢集可調整的節點數目。
+	- tier：指定您的虛擬機器是「低優先順序」或「專用」。 設定為低優先順序可能會降低成本，因為無法向您保證可用性
+30. compute cluster 
+
+	from azure.ai.ml import command
+
+	# configure job
+	job = command(
+		code="./src",
+		command="python diabetes-training.py",
+		environment="AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest",
+		compute="cpu-cluster",
+		display_name="train-with-cluster",
+		experiment_name="diabetes-training"
+		)
+
+	# submit job
+	returned_job = ml_client.create_or_update(job)
+	aml_url = returned_job.studio_url
+	print("Monitor your job at", aml_url)   
+31. 檢視 Azure Machine Learning 工作區內的所有可用環境   
+
+	envs = ml_client.environments.list()
+	for env in envs:
+		print(env.name)   
+32. 檢閱特定環境的詳細資料，您可以依其已註冊的名稱擷取環境	
+	
+	env = ml_client.environments.get(name="my-environment", version="1")
+	print(env)   
+33. Docker 映像可以裝載在公用登錄中，例如 Docker Hub 或私下儲存在 Azure Container Registry 中
+   
+[使用 Azure Machine Learning 進行實驗]
+
+1. AutoML 會自動對數值資料套用規模調整和正規化，以協助防止任何大規模的特徵支配定型
+2. 想要使用整合的特徵化函式，可加以自訂。 例如，您可以指定針對特定功能所應使用的插補法
+3. AutoML 實驗完成之後，您將能夠檢閱套用了哪些規模調整和正規化方法。 如果 AutoML 偵測到資料發生任何問題 (例如遺漏值或類別不平衡)，您也會收到通知
+4. 您可以選擇禁止選取個別演算法；如果您知道資料不適合特定類型的演算法，這很有用
+5. primary_metric: 決定最佳模型的目標效能標準
+6. 有數個選項可設定 AutoML 實驗的限制：
+
+	- timeout_minutes：完整 AutoML 實驗終止後的分鐘數
+	- trial_timeout_minutes：一項試驗可能需要的分鐘數上限
+	- max_trials：試驗數目上限，或將定型的模型數目上限
+	- enable_early_termination：如果分數未在短期內改善，是否結束實驗
+	
+	classification_job.set_limits(
+		timeout_minutes=60, 
+		trial_timeout_minutes=20, 
+		max_trials=5,
+		enable_early_termination=True,
+	)   
+7. 分類模型支援的三個資料護
+	- 類別平衡偵測
+	- 遺漏特徵值插補
+	- 高基數特徵偵測
+   狀態
+	- 已通過：未偵測到任何問題，無需執行任何動作
+	- 完成：已成功將變更套用到資料
+	- 已警示：偵測到問題，但無法修正
+  
+   

@@ -115,7 +115,7 @@
     ```markdown
     envs = ml_client.environments.list()
     for env in envs:
-    print([env.name](http://env.name/))
+        print(env.name)   
     ```
     
 32. 檢閱特定環境的詳細資料，您可以依其已註冊的名稱擷取環境

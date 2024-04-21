@@ -31,6 +31,98 @@
     - 針對必須在多個環境 (例如開發、測試和生產) 中複寫的資產和資源，確保其一致性
     - 將機器學習資產設定併入開發人員作業 (DevOps) 工作流程，例如持續整合和持續部署 (CI/CD) 管線
 18. 若要使用 Azure CLI 與 Azure Machine Learning 工作區互動，將使用 command。 每個 command 前面都會加上 az ml
+    
     ```
     az ml compute create -name aml-cluster -size STANDARD_DS3_v2 -min-instances 0 -max-instances 5 -type AmlCompute -resource-group my-resource-group -workspace-name my-workspace
     ```
+    
+19. Azure CLI 很常搭配 YAML 使用
+    
+    ```markdown
+    az ml compute create -file compute.yml -resource-group my-resource-group -workspace-name my-workspace
+    ```
+    
+    compute.yml 內容如下
+    
+    ```markdown
+    $schema: https://azuremlschemas.azureedge.net/latest/amlCompute.schema.json
+    name: aml-cluster
+    type: amlcompute
+    size: STANDARD_DS3_v2
+    min_instances: 0
+    max_instances: 5
+    ```
+    
+20. 在 Azure Machine Learning 內容中使用資料時，有三種常見的通訊協定：
+    - http(s)：用於公開或私人儲存在 Azure Blob 儲存體內的資料，或公開可用的 HTTP 位置
+    - abfs(s)：用於 Azure Data Lake Storage Gen 2 中的資料存放區
+    - azureml：用於儲存在資料存放區中的資料
+21. Azure 上建立具有現有儲存體帳戶的資料存放區時，您可以選擇兩種不同的驗證方法
+    - 認證型：使用服務主體、共用存取簽章 (SAS) 權杖或帳戶金鑰來驗證儲存體帳戶的存取權
+    - 以身分識別為依據：使用您的「Microsoft Entra 身分識別」或「受控識別」
+22. 每個工作區都有四個內建資料存放區（兩個連線到Azure 儲存體 Blob 容器，兩個連線到Azure 儲存體檔案共用）
+23. 資料資產: 不想擔心如何取得存取權，簡化對您想要使用資料的存取
+24. 建立資料資產並指向儲存在本機裝置上的檔案或資料夾時，會將檔案或資料夾的複本上傳至預設資料存放區 workspaceblobstore
+25. 當您的資料架構複雜或經常變更時，建議使用 MLTable 資料資產。 您不需在使用資料的每個指令碼中變更讀取資料的方式，而只需在資料資產本身中變更
+26. 計算執行個體(ComputeInstance)必須在 Azure 區域 (例如西歐內) 中具有唯一的名稱。 如果名稱已經存在，則會顯示錯誤訊息
+27. 可以將計算執行個體附加至筆記本以在筆記本內執行資料格
+28. 計算執行個體只能指派給「一位」使用者，因為計算執行個體無法處理平行工作負載。 當您建立新的計算執行個體時，如果您有適當的權限，您可以將它指派給其他人
+29. 建立 cluster
+    
+    ```markdown
+    from azure.ai.ml.entities import AmlCompute
+    
+    cluster_basic = AmlCompute(
+    name="cpu-cluster",
+    type="amlcompute",
+    size="STANDARD_DS3_v2",
+    location="westus",
+    min_instances=0,
+    max_instances=2,
+    idle_time_before_scale_down=120,
+    tier="low_priority",
+    )
+    
+    ml_client.begin_create_or_update(cluster_basic).result()
+    ```
+    
+    - size：指定計算叢集中每個節點的虛擬機器類型。 根據 Azure 中虛擬機器的大小。 除了大小之外，您也可以指定是否要使用 CPU 或 GPU。
+    - max_instances：指定計算叢集可相應放大的節點數目上限。 計算叢集可以處理的平行工作負載數目，類似於叢集可調整的節點數目。
+    - tier：指定您的虛擬機器是「低優先順序」或「專用」。 設定為低優先順序可能會降低成本，因為無法向您保證可用性
+30. compute cluster
+    
+    ```markdown
+    from [azure.ai.ml](http://azure.ai.ml/) import command
+    
+    # configure job
+    job = command(
+    code="./src",
+    command="python [diabetes-training.py](http://diabetes-training.py/)",
+    environment="AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest",
+    compute="cpu-cluster",
+    display_name="train-with-cluster",
+    experiment_name="diabetes-training"
+    )
+    
+    # submit job
+    returned_job = ml_client.create_or_update(job)
+    aml_url = returned_job.studio_url
+    print("Monitor your job at", aml_url)
+    ```
+    
+31. 檢視 Azure Machine Learning 工作區內的所有可用環境
+    
+    ```markdown
+    envs = ml_client.environments.list()
+    for env in envs:
+    print([env.name](http://env.name/))
+    ```
+    
+32. 檢閱特定環境的詳細資料，您可以依其已註冊的名稱擷取環境
+    
+    ```markdown
+    env = ml_client.environments.get(name="my-environment", version="1")
+    print(env)
+    ```
+    
+33. Docker 映像可以裝載在公用登錄中，例如 Docker Hub 或私下儲存在 Azure Container Registry 中

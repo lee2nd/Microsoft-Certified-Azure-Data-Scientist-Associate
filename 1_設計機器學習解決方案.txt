@@ -10,7 +10,7 @@
    - Azure Blob 儲存體
      --「非結構化」資料的最便宜的選項。 適用於儲存影像、文字、csv 和 JSON 等檔案
    - Azure Data Lake Storage (Gen 2)
-     -- Azure Blob 儲存體的更進階版本也會將 CSV 檔案和影像等檔案儲存為「非結構化」資料
+	 -- Azure Blob 儲存體的更進階版本也會將 CSV 檔案和影像等檔案儲存為「非結構化」資料
 	 -- 實作階層式命名空間，更容易存取特定檔案或資料夾
 	 -- 儲存體容量幾乎無限制，因此適合用來儲存大型資料
 	 -- An Azure Data Lake will allow us to store the data as CSV files, and make use of the hierarchical namespace to have more granular control over who has access to what

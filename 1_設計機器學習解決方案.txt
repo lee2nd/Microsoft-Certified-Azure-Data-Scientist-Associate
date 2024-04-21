@@ -1,99 +1,99 @@
-1. 資料是機器學習的基礎，資料數量和資料品質都會影響模型的精確度
-2. 定義問題 > 取得資料 > 準備資料 > 訓練模型 > 整合模型 > 監視模型
-   (此流程是反覆且連續的)
-3. 資料格式: 
-   - 表格式或結構化資料(SQL、Excel)
-   - 半結構化資料(具有欄位，但內容不一致，ex: json、xml、mongodb)
-   - 非結構化資料(在結構方面不遵循任何規則的檔案。 例如，文件、影像、音訊和視訊檔案會被視為非結構化資料)
-4. 雲端的優點之一，就是能夠根據您的需求相應增加或減少計算。可以在不需要計算時將其關閉，並在您想要再次使用它時將其重新啟動
-5. 儲存資料
-   - Azure Blob 儲存體
-     --「非結構化」資料的最便宜的選項。 適用於儲存影像、文字、csv 和 JSON 等檔案
-   - Azure Data Lake Storage (Gen 2)
-	 -- Azure Blob 儲存體的更進階版本也會將 CSV 檔案和影像等檔案儲存為「非結構化」資料
-	 -- 實作階層式命名空間，更容易存取特定檔案或資料夾
-	 -- 儲存體容量幾乎無限制，因此適合用來儲存大型資料
-	 -- An Azure Data Lake will allow us to store the data as CSV files, and make use of the hierarchical namespace to have more granular control over who has access to what
-   - Azure SQL 資料庫
-	 -- 將資料儲存為「結構化」資料
-	 -- 適用於不會隨時間變更的資料
-6. 資料擷取管線
-   - 是一連串工作，可移動和轉換資料	
-   - Azure Synapse Analytics(Azure Synapse Pipelines)
-     -- 可以透過便於使用的 UI 建立和排程資料擷取管線，或以 JSON 格式定義管線
-	 -- set up a secure connection
-	 -- create automated pipelines
-	 -- 通常拿來複製和轉換資料，輕鬆地將資料從一個來源複製到資料存放區(放到 Azure Blob、Azure Data Lake 中)
-   - Azure Databricks
-	 -- 偏好使用程式碼(SQL、Python 或 R)
-	 -- 使用 Spark 叢集
-   - Azure Machine Learning
-     -- 提供計算叢集
-	 -- 可在需要時自動相應增加和減少
-	 -- 管線通常用於定型"機器學習模型"
-   - Azure Synapse Analytics 和 Azure Databricks 提供更可調整的計算，可讓轉換分散到計算節點。 
-     因此，當您使用 Azure Synapse Analytics 或 Azure Databricks 執行資料轉換時，
-	 資料轉換的執行效能可能會更好，而不是使用 Azure Machine Learning
-7. 機器學習模型的服務
-   - Azure Machine Learning
-     -- Studio 進行 UI 型體驗
-	 -- Python SDK 管理機器學習工作負載
-	 -- CLI 以取得程式碼優先體驗
-   - Azure Synapse Analytics
-     -- 分散式運算進行巨量資料分析
-	 -- 使用 MLlib 在 Spark 集區上定型模型
-   - Azure AI 服務
-     -- "預先建置"的機器學習模型集合
-	 -- EX: 影像中的物件偵測
-	 -- 以應用程式程式設計介面 (API) 的形式提供
-8. 機器學習模型的服務之間的差異
-   - 每當其中一個可自訂的預先建置模型符合您的需求時，請使用 Azure AI 服務，以節省時間和精力
-   - 如果您想要保留所有資料相關的 (資料工程和資料科學) 專案在相同服務內，請使用 Azure Synapse Analytics 或 Azure Databricks
-   - 如果您需要使用大型資料集 (當您遇到標準計算的容量限制時，資料集為大型時) 的 分散式運算，可使用 Azure Synapse Analytics 或 Azure Databricks。 您必須使用 PySpark，以使用分散式運算
-   - 當您想要完全控制模型定型和管理時，請使用 Azure Machine Learning 或 Azure Databricks
-   - 如果 Python 是您慣用的程式設計語言，請使用 Azure Machine Learning
-   - 當您想要用直覺式使用者介面來管理機器學習生命週期時，請使用 Azure Machine Learning
-9. 較小的表格式資料集，使用 CPU 即可滿足需求，且費用較為便宜。 每當使用影像或文字等非結構化資料時，GPU 會更加強大且有效
-10. 較大的表格式資料量，使用 GPU 可能也很有幫助(RAPID 等程式庫)
-11. Spark 叢集是由驅動程式節點和背景工作角色節點所組成。 您的程式碼一開始會與驅動程式節點通訊。 工作接著會散發至背景工作角色節點。 當您使用散發工作的服務時，可以平行執行工作負載的一部分，以減少處理時間
-12. 若要充分利用 Spark 叢集，您的程式碼必須以適用於 Spark 的語言撰寫 (例如 Scala、SQL、RSpark 或 PySpark)，才能散發工作負載
-13. 無論您是想要即時或批次預測，不一定要取決於收集新資料的頻率。 而是取決於您需要產生預測的頻率和速度。如果您需要在收集新資料時立即產生模型的預測，則需要即時預測。 如果模型預測只會在特定時間取用，您需要批次預測
-14. Azure Container Instance (ACI) 和 Azure Kubernetes Service (AKS) 之類的容器技術適合即時預測(需要永遠可用的計算，而且能夠 (幾乎) 立即傳回結果)  
-15. MLOPS 結構
-	- 將模型定型轉換為強固且可重現的管線
-	- 在開發環境中測試程式碼和模型
-	- 在生產環境中部署模型
-	- 將端對端流程自動化
-16. MLOPS 環境
-	- 在「開發」環境中試驗模型定型
-	- 將最佳模型移至「預備」或「生產前」環境，部署及測試模型
-	- 最後，將模型「發行」到「生產」環境，部署模型以供終端使用者使用
-17. MLOPS 步驟	
-	- 設定：為解決方案建立所有必要的 Azure 資源
-	- 模型開發 (內部迴圈)：探索與處理資料來訓練與評估模型
-	- 持續整合：封裝並註冊模型
-	- 模型部署 (外部迴圈)：部署模型
-	- 持續部署：測試模型並升階至實際執行環境
-	- 監視：監視模型與端點效能	
-18. 組織 Azure Machine Learning 環境
-    - 最佳做法是在不同的階段使用不同的環境
-	- 小組使用開發、生產前和生產環境。並非小組每個人都該存取所有環境
-	- EX: 資料科學家可能只在開發環境中使用非生產資料，而機器學習工程師則使用生產資料，在生產前和生產環境中部署模型
-19. 分工
-	- 將資料儲存在 Data engineer 所管理的 Azure Blob 儲存體中
-	- Infra 小組要建立所有必要的 Azure 資源，例如 Azure Machine Learning 工作區
-	- Data scientist 著重於其最佳用途：開發和定型模型 (內部迴圈)
-	- MLE 會將定型的模型進行部署 (外部迴圈)
-20. Monitoring
-    - 模型
-	  -- 使用 MLflow 來追蹤
-	  -- 在監視模型之前，請務必決定您想要監視的效能計量，以及每個計量的基準應該為何。何時應收到警示，指出模型不再正確
-	- 資料
-	  -- 經過一段時間後，可能會有變更資料設定檔的趨勢，讓您的模型較不準確
-	  -- 例如，假設模型已定型為根據汽缸數、引擎大小、重量和其他特徵來預測汽車的預期汽油里程數。 經過一段時間後，隨著汽車製造和引擎技術的進步，車輛的一般燃料效率可能會大幅改善；使得根據舊資料定型所做的模型預測較不準確
-	- Infra
-      -- 將成本降至最低並最佳化效能
-	  -- compute 可能是其中一個最多費用的項目
-	  -- 藉由檢閱 compute 使用率，您知道是否可以縮小已佈建的 compute，或是否需要擴增以避免容量限制
-21. MLOps 專案中常用的兩個工具是 Azure DevOps 和 GitHub (Actions)，這兩個工具都可讓您建立自動化管線，並可觸發 Azure Machine Learning 管線
-22. 使用 Azure DevOps 和 GitHub 之類的工具時，建議您改用 Azure Machine Learning CLI 延伸模組來設定必要的資源和作業。 Azure CLI 是專為自動化工作而設計，因此可能更易於搭配 Azure DevOps 和 GitHub 使用
+資料是機器學習的基礎，資料數量和資料品質都會影響模型的精確度
+定義問題 > 取得資料 > 準備資料 > 訓練模型 > 整合模型 > 監視模型
+(此流程是反覆且連續的)
+資料格式:
+表格式或結構化資料(SQL、Excel)
+半結構化資料(具有欄位，但內容不一致，ex: json、xml、mongodb)
+非結構化資料(在結構方面不遵循任何規則的檔案。 例如，文件、影像、音訊和視訊檔案會被視為非結構化資料)
+雲端的優點之一，就是能夠根據您的需求相應增加或減少計算。可以在不需要計算時將其關閉，並在您想要再次使用它時將其重新啟動
+儲存資料
+Azure Blob 儲存體
+--「非結構化」資料的最便宜的選項。 適用於儲存影像、文字、csv 和 JSON 等檔案
+Azure Data Lake Storage (Gen 2)
+-- Azure Blob 儲存體的更進階版本也會將 CSV 檔案和影像等檔案儲存為「非結構化」資料
+-- 實作階層式命名空間，更容易存取特定檔案或資料夾
+-- 儲存體容量幾乎無限制，因此適合用來儲存大型資料
+-- An Azure Data Lake will allow us to store the data as CSV files, and make use of the hierarchical namespace to have more granular control over who has access to what
+Azure SQL 資料庫
+-- 將資料儲存為「結構化」資料
+-- 適用於不會隨時間變更的資料
+資料擷取管線
+是一連串工作，可移動和轉換資料
+Azure Synapse Analytics(Azure Synapse Pipelines)
+-- 可以透過便於使用的 UI 建立和排程資料擷取管線，或以 JSON 格式定義管線
+-- set up a secure connection
+-- create automated pipelines
+-- 通常拿來複製和轉換資料，輕鬆地將資料從一個來源複製到資料存放區(放到 Azure Blob、Azure Data Lake 中)
+Azure Databricks
+-- 偏好使用程式碼(SQL、Python 或 R)
+-- 使用 Spark 叢集
+Azure Machine Learning
+-- 提供計算叢集
+-- 可在需要時自動相應增加和減少
+-- 管線通常用於定型"機器學習模型"
+Azure Synapse Analytics 和 Azure Databricks 提供更可調整的計算，可讓轉換分散到計算節點。
+因此，當您使用 Azure Synapse Analytics 或 Azure Databricks 執行資料轉換時，
+資料轉換的執行效能可能會更好，而不是使用 Azure Machine Learning
+機器學習模型的服務
+Azure Machine Learning
+-- Studio 進行 UI 型體驗
+-- Python SDK 管理機器學習工作負載
+-- CLI 以取得程式碼優先體驗
+Azure Synapse Analytics
+-- 分散式運算進行巨量資料分析
+-- 使用 MLlib 在 Spark 集區上定型模型
+Azure AI 服務
+-- "預先建置"的機器學習模型集合
+-- EX: 影像中的物件偵測
+-- 以應用程式程式設計介面 (API) 的形式提供
+機器學習模型的服務之間的差異
+每當其中一個可自訂的預先建置模型符合您的需求時，請使用 Azure AI 服務，以節省時間和精力
+如果您想要保留所有資料相關的 (資料工程和資料科學) 專案在相同服務內，請使用 Azure Synapse Analytics 或 Azure Databricks
+如果您需要使用大型資料集 (當您遇到標準計算的容量限制時，資料集為大型時) 的 分散式運算，可使用 Azure Synapse Analytics 或 Azure Databricks。 您必須使用 PySpark，以使用分散式運算
+當您想要完全控制模型定型和管理時，請使用 Azure Machine Learning 或 Azure Databricks
+如果 Python 是您慣用的程式設計語言，請使用 Azure Machine Learning
+當您想要用直覺式使用者介面來管理機器學習生命週期時，請使用 Azure Machine Learning
+較小的表格式資料集，使用 CPU 即可滿足需求，且費用較為便宜。 每當使用影像或文字等非結構化資料時，GPU 會更加強大且有效
+較大的表格式資料量，使用 GPU 可能也很有幫助(RAPID 等程式庫)
+Spark 叢集是由驅動程式節點和背景工作角色節點所組成。 您的程式碼一開始會與驅動程式節點通訊。 工作接著會散發至背景工作角色節點。 當您使用散發工作的服務時，可以平行執行工作負載的一部分，以減少處理時間
+若要充分利用 Spark 叢集，您的程式碼必須以適用於 Spark 的語言撰寫 (例如 Scala、SQL、RSpark 或 PySpark)，才能散發工作負載
+無論您是想要即時或批次預測，不一定要取決於收集新資料的頻率。 而是取決於您需要產生預測的頻率和速度。如果您需要在收集新資料時立即產生模型的預測，則需要即時預測。 如果模型預測只會在特定時間取用，您需要批次預測
+Azure Container Instance (ACI) 和 Azure Kubernetes Service (AKS) 之類的容器技術適合即時預測(需要永遠可用的計算，而且能夠 (幾乎) 立即傳回結果)
+MLOPS 結構
+將模型定型轉換為強固且可重現的管線
+在開發環境中測試程式碼和模型
+在生產環境中部署模型
+將端對端流程自動化
+MLOPS 環境
+在「開發」環境中試驗模型定型
+將最佳模型移至「預備」或「生產前」環境，部署及測試模型
+最後，將模型「發行」到「生產」環境，部署模型以供終端使用者使用
+MLOPS 步驟
+設定：為解決方案建立所有必要的 Azure 資源
+模型開發 (內部迴圈)：探索與處理資料來訓練與評估模型
+持續整合：封裝並註冊模型
+模型部署 (外部迴圈)：部署模型
+持續部署：測試模型並升階至實際執行環境
+監視：監視模型與端點效能
+組織 Azure Machine Learning 環境
+最佳做法是在不同的階段使用不同的環境
+小組使用開發、生產前和生產環境。並非小組每個人都該存取所有環境
+EX: 資料科學家可能只在開發環境中使用非生產資料，而機器學習工程師則使用生產資料，在生產前和生產環境中部署模型
+分工
+將資料儲存在 Data engineer 所管理的 Azure Blob 儲存體中
+Infra 小組要建立所有必要的 Azure 資源，例如 Azure Machine Learning 工作區
+Data scientist 著重於其最佳用途：開發和定型模型 (內部迴圈)
+MLE 會將定型的模型進行部署 (外部迴圈)
+Monitoring
+模型
+-- 使用 MLflow 來追蹤
+-- 在監視模型之前，請務必決定您想要監視的效能計量，以及每個計量的基準應該為何。何時應收到警示，指出模型不再正確
+資料
+-- 經過一段時間後，可能會有變更資料設定檔的趨勢，讓您的模型較不準確
+-- 例如，假設模型已定型為根據汽缸數、引擎大小、重量和其他特徵來預測汽車的預期汽油里程數。 經過一段時間後，隨著汽車製造和引擎技術的進步，車輛的一般燃料效率可能會大幅改善；使得根據舊資料定型所做的模型預測較不準確
+Infra
+-- 將成本降至最低並最佳化效能
+-- compute 可能是其中一個最多費用的項目
+-- 藉由檢閱 compute 使用率，您知道是否可以縮小已佈建的 compute，或是否需要擴增以避免容量限制
+MLOps 專案中常用的兩個工具是 Azure DevOps 和 GitHub (Actions)，這兩個工具都可讓您建立自動化管線，並可觸發 Azure Machine Learning 管線
+使用 Azure DevOps 和 GitHub 之類的工具時，建議您改用 Azure Machine Learning CLI 延伸模組來設定必要的資源和作業。 Azure CLI 是專為自動化工作而設計，因此可能更易於搭配 Azure DevOps 和 GitHub 使用

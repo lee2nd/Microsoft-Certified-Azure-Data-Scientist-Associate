@@ -48,7 +48,9 @@
    A: Python SDK
 8. Q: 已開發用來預測銷售預測的機器學習模型。 每週都會擷取新的銷售資料，而且模型必須在產生新預測之前，重新訓練最新的資料。 每週應該使用哪一個工具來重新訓練模型？ 
    A: Azure CLI
-   
+9. Q: 資料科學家會定型迴歸模型，並想要透過實驗執行儲存均方根誤差 (RMSE)，追蹤模型效能。 哪一種方法可用來記錄 RMSE？
+   A: 使用 mlflow.log_metric() 記錄 RMSE 等計量
+
    
 [設計機器學習解決方案]
 
@@ -287,5 +289,132 @@
 	- 已通過：未偵測到任何問題，無需執行任何動作
 	- 完成：已成功將變更套用到資料
 	- 已警示：偵測到問題，但無法修正
-  
-   
+8. MLflow
+   一個開放原始碼程式庫，可用來追蹤和管理機器學習實驗
+   可記錄參數、計量和成品
+
+[使用 Azure Machine Learning 將模型定型最佳化]
+
+1. 指令碼很適合用於在實際執行環境中進行測試和自動化。 若要建立生產就緒指令碼，您必須
+   - 清除非必要的程式碼
+   - 將程式碼重構為函數
+   - 在終端中測試指令碼(python train.py)
+2. 用 MLflow 追蹤機器學習作業有兩個選項：
+   - 使用 mlflow.autolog() 啟用自動記錄
+   - 使用 mlflow.log_* 透過記錄函式追蹤自訂計量
+	 -- mlflow.log_param()：記錄單一索引鍵/值參數。 針對您想要記錄的輸入參數使用此函式
+	 -- mlflow.log_metric()：記錄單一索引鍵/值計量。 值必須是數字。 針對您想要與執行一起儲存的任何輸出使用此函式。
+	 -- mlflow.log_artifact()：記錄檔案。 針對您想要記錄的任何繪圖使用此函式，請先儲存為影像檔。
+
+	import mlflow
+	
+	reg_rate = 0.1
+	mlflow.log_param("Regularization rate", reg_rate)
+
+3. yaml
+	name: mlflow-env
+	channels:
+	  - conda-forge
+	dependencies:
+	  - python=3.8
+	  - pip
+	  - pip:
+	    - numpy
+	    - pandas
+	    - scikit-learn
+	    - matplotlib
+	    - mlflow
+	    - azureml-mlflow
+4. 您必須在 Azure Machine Learning 中將定型指令碼提交為作業
+5. 多次工作執行可以分組到一個實驗中
+6. 可以視需要在多個實驗之間執行搜尋。 如果您想要在不同實驗中 (由不同人員或專案反覆項目) 比較相同模型的執行狀況
+   - mlflow.search_runs(exp.experiment_id)
+   - mlflow.search_runs(exp.experiment_id, order_by=["start_time DESC"], max_results=2)
+   - mlflow.search_runs(
+    exp.experiment_id, filter_string="params.num_boost_round='100'", max_results=2
+)
+7. 定義搜尋空間
+   - 離散超參數
+     -- QUniform(min_value, max_value, q)
+     -- QLogUniform(min_value, max_value, q)
+     -- QNormal(mu, sigma, q)
+     -- QLogNormal(mu, sigma, q)
+   - 連續超參數
+     -- Uniform(min_value, max_value)
+     -- LogUniform(min_value, max_value)
+     -- Normal(mu, sigma)
+     -- LogNormal(mu, sigma)
+   - EX:
+    batch_size 超參數可以有 16、32 或 64 的值，且 learning_rate 超參數可以有常態分佈的任何值，其平均數為 10，標準差為 3
+	from azure.ai.ml.sweep import Choice, Normal
+	
+	command_job_for_sweep = job(
+	    batch_size=Choice(values=[16, 32, 64]),    
+	    learning_rate=Normal(mu=10, sigma=3),
+	)
+8. 取樣
+   - Grid search
+     -- 所有超參數都是離散
+   - Random search
+     -- 可能會是離散和連續的值的混合
+     -- Sobol 是一種隨機取樣類型，可讓您使用種子。 當您新增種子時，可以重現整理作業，而且搜尋空間分佈會更平均地散佈
+    from azure.ai.ml.sweep import RandomParameterSampling
+
+	sweep_job = command_job_for_sweep.sweep(
+	    sampling_algorithm = RandomParameterSampling(seed=123, rule="sobol"),
+	    ...
+	)
+   - 貝氏 
+9. Early stop
+   - evaluation_interval
+   - delay_evaluation
+   - 新的模型可能只會比先前的模型稍微好一些。 若要判斷模型應該執行得比先前試用更好的程度，有三個選項可供提早終止
+     -- Bandit 原則
+     -- 中位數停止原則
+     -- 截斷選取原則
+10. 超參數的 search 可以寫在命令列中
+	from azure.ai.ml import command
+	
+	# configure command job as base
+	job = command(
+	    code="./src",
+	    command="python train.py --regularization ${{inputs.reg_rate}}",
+	    inputs={
+	        "reg_rate": 0.01,
+	    },
+	    environment="AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest",
+	    compute="aml-cluster",
+	    )
+		# 法一: 手動寫
+		from azure.ai.ml.sweep import Choice
+		
+		command_job_for_sweep = job(
+		    reg_rate=Choice(values=[0.01, 0.1, 1]),
+		)
+		
+		# 法二: 自動化 search
+		from azure.ai.ml import MLClient
+		
+		# apply the sweep parameter to obtain the sweep_job
+		sweep_job = command_job_for_sweep.sweep(
+		    compute="aml-cluster",
+		    sampling_algorithm="grid",
+		    primary_metric="Accuracy",
+		    goal="Maximize",
+		)
+		
+		# set the name of the sweep job experiment
+		sweep_job.experiment_name="sweep-example"
+		
+		# define the limits for this sweep
+		sweep_job.set_limits(max_total_trials=4, max_concurrent_trials=2, timeout=7200)
+		
+		# submit the sweep
+		returned_sweep_job = ml_client.create_or_update(sweep_job)
+
+
+
+
+
+
+

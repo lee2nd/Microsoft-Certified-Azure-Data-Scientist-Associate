@@ -95,11 +95,11 @@
     # configure command job as base
     
     job = command(
-    			code="./src",
-    			command="python [train.py](http://train.py/) -regularization ${{inputs.reg_rate}}",
-    			inputs={"reg_rate": 0.01},
-    			environment="AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest",
-    			compute="aml-cluster",
+        code="./src",
+        command="python train.py --regularization ${{inputs.reg_rate}}",
+        inputs={"reg_rate": 0.01},
+        environment="AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest",
+        compute="aml-cluster",
     )
     ```
     

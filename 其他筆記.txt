@@ -1,0 +1,8 @@
+1. Azure Cognitive Services: 具有REST API和客戶端庫SDK的雲端服務，可用於幫助開發人員建置認知智慧應用程式，而無需太過深入的人工智慧（AI）或數據科學技能或知識
+2. AML: Automated ML
+3. Azure Command Line Interface(CLI): 類似 cmd，用 linux 語法
+4. SDK(Software Development Kit): 軟體開發工具套件
+5. environments(考試重點)
+   - curated environments
+   - user-managed environments
+   - system-managed environments

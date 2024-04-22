@@ -6,3 +6,4 @@
    - curated environments
    - user-managed environments
    - system-managed environments
+6. https://www.udemy.com/course/practice-exams-ms-azure-dp-100-design-implement-ds-sol/learn/quiz/5256600#overview

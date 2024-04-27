@@ -92,7 +92,7 @@
 30. compute cluster
     
     ```markdown
-    from [azure.ai.ml](http://azure.ai.ml/) import command
+    from azure.ai.ml import command
     
     # configure job
     job = command(

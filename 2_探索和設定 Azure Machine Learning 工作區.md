@@ -97,7 +97,7 @@
     # configure job
     job = command(
     code="./src",
-    command="python [diabetes-training.py](http://diabetes-training.py/)",
+    command="python diabetes-training.py",
     environment="AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest",
     compute="cpu-cluster",
     display_name="train-with-cluster",

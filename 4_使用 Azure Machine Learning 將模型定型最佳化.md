@@ -90,7 +90,7 @@
 10. 超參數的 search 可以寫在命令列中
     
     ```markdown
-    from [azure.ai.ml](http://azure.ai.ml/) import command
+    from azure.ai.ml import command
     
     # configure command job as base
     
